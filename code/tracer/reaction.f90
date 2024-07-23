@@ -533,34 +533,38 @@ contains
     function_light=irradiance0*exp(-k_ext*ABS(dz)*(iz-1)) !from P Franks and C Chen 2001
     
     !dy(0) = b1*c(2)*c(6)+b2*c(2)-a1*c(1)-a2*c(1)*c(7)
-
+     dy(0)=0
+     dy(1)=0
+     dy(2)=0
+     dy(3)=0
+     dy(4)=0
     !dy(1) = a1*c(1)+a2*c(1)*c(7)-b1*c(2)*c(6)-b2*c(2) &
-    !     +a3*c(3)*c(6)-b3*c(2)-a4*c(2)*c(7)+b4*c(3) &
-    !     +a7*c(3)*c(4)-b7*c(5)*c(2)
+      !   +a3*c(3)*c(6)-b3*c(2)-a4*c(2)*c(7)+b4*c(3) &
+      !   +a7*c(3)*c(4)-b7*c(5)*c(2)
 
     !dy(2) = -a3*c(3)*c(6)+ b3*c(2)+a4*c(2)*c(7)-b4*c(3) &
-    !     -a7*c(3)*c(4)+b7*c(5)*c(2)
+     !    -a7*c(3)*c(4)+b7*c(5)*c(2)
 
     !dy(3) = -a6*c(4)*c(7)+ b6*c(5)-a7*c(3)*c(4)+b7*c(5)*c(2)
 
     !dy(4) = a6*c(4)*c(7)- b6*c(5)+a7*c(3)*c(4)-b7*c(5)*c(2)
 
-    !dy(5) = 0
-
+    dy(5) = 0
+    dy(6) = 0
     !dy(6) = b2*c(2)-a2*c(1)*c(7)-a4*c(2)*c(7)+b4*c(3)+a5 &
-      !   -b5*c(6)*c(7)-a6*c(4)*c(7)+b6*c(5)
+     !    -b5*c(6)*c(7)-a6*c(4)*c(7)+b6*c(5)
 
-    !dy(7) = vm * (c(10) / (kn + c(10))) * function_light * c(8) - &
-     ! intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_phyto * c(8)
+    dy(7) = vm * (c(10) / (kn + c(10))) * function_light * c(8) - &
+      intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_phyto * c(8)*1.17/1000
 
-    !dy(8) = (gamma * intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_zoo * c(9))
+    dy(8) = (gamma * intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_zoo * c(9))*1.17/1000
 
-    !dy(9) = (-vm * (c(10) / (kn + c(10))) * function_light * c(8) + (1.0 - gamma) * &
-    !  intensity * (1.0 - exp(-lambda * c(8))) * c(9) + death_rate_phyto * c(8) + death_rate_zoo * c(9))
+    dy(9) = (-vm * (c(10) / (kn + c(10))) * function_light * c(8) + (1.0 - gamma) * &
+      intensity * (1.0 - exp(-lambda * c(8))) * c(9) + death_rate_phyto * c(8) + death_rate_zoo * c(9))*1.17/1000
 
     do i = 0,nscl-2
-       !dydt(i) = dy(i)
-       dydt(i) = 0.0
+       dydt(i) = dy(i)
+       !dydt(i) = 0.0
     enddo
 
   end function dydt
