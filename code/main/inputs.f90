@@ -15,9 +15,9 @@ MODULE inputs
                       c5  =  1.18909e02,             &
                       c6  =  6.30928e-03,           &
                       c7  =  9.60492,             &
-                      c8  =  0.3,             &
-                      c9  =  0.2,           &
-                      c10  =  1.6,             &
+                      c8  =  0.3*1.17/1000,             & !converting from umolN/L to umol/kg
+                      c9  =  0.2*1.17/1000,           &!converting from umolN/L to umol/kg
+                      c10  =  1.6*1.17/1000,             &!converting from umolN/L to umol/kg
                       ustokes = 6.0,                       &
                       Rgas = 0.0083143
 
