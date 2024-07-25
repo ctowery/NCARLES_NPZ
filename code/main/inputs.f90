@@ -5,7 +5,7 @@ MODULE inputs
   REAL, PARAMETER ::  ws10 = 6.0,                           &
                       iTsurf = 25,                         &
                       hflux = 0.0e-7,                    &
-                      ihb = 30.0,                           &
+                      ihb = 30.0,                           & !mixing layer depth
                       cd_fac = 0.7,                         &
                       c_alk = 1.5,                          &
                       c1  =  7.56903,              &
@@ -15,9 +15,9 @@ MODULE inputs
                       c5  =  1.18909e02,             &
                       c6  =  6.30928e-03,           &
                       c7  =  9.60492,             &
-                      c8  =  0.3*1.17/1000,             & !converting from umolN/L to umol/kg
-                      c9  =  0.2*1.17/1000,           &!converting from umolN/L to umol/kg
-                      c10  =  1.6*1.17/1000,             &!converting from umolN/L to umol/kg
+                      c8  =  0.3,             & 
+                      c9  =  0.2,           &
+                      c10  =  1.6,             &
                       ustokes = 6.0,                       &
                       Rgas = 0.0083143
 
