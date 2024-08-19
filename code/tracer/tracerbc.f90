@@ -41,7 +41,7 @@ module tracerbc
     subroutine applytracerbc(it)
       integer, intent(in) :: it
       integer :: iscl, np, zt
-      real :: ta, vals
+      real :: ta, vals, zl
 
             !! active tracers (temperature)
             iscl = 1; 
@@ -95,7 +95,7 @@ module tracerbc
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
 
-            iscl =11; !nutrients (N)
+            iscl =11; !nitrate (NO3)
             ictype(iscl) = 1;   val(iscl) = c10;     tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
@@ -107,6 +107,7 @@ module tracerbc
               if (ictype(iscl).eq.4) call pointsource(iscl, bnds, vals);
               if (ictype(iscl).eq.5) call vgradsource(iscl,bnds,vals);
               if (ictype(iscl).eq.8) call zdecay(iscl, k_ext, bnds, vals);
+              if (ictype(iscl).eq.9) call nutrients(iscl, k_ext, bnds, vals);
           endif
           bnds = 0; vals = 0; points = 0;
         enddo
@@ -171,6 +172,24 @@ module tracerbc
             do ix=1,nnx
               if ((iz >= izs) .and. (iz <= ize)) then
                 t(ix,iy,iscl,iz) =vals*exp(k_ext*z(iz-1))
+              endif
+            end do
+         end do
+      end do
+    end subroutine
+
+    subroutine nutrients(iscl, k_ext, bnds, vals)
+      integer, intent(in) :: iscl
+      real, intent(in) :: k_ext
+      real, intent(in) :: vals
+      integer, intent(in), dimension(2) :: bnds
+      integer :: ix,iy,iz, nnz
+
+      do iy=iys,iye
+         do iz=bnds(1),bnds(2)
+            do ix=1,nnx
+              if ((iz >= izs) .and. (iz <= ize)) then
+                t(ix,iy,iscl,iz) =vals*exp(-k_ext*(z(iz-1)-z(nnz)))
               endif
             end do
          end do

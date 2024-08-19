@@ -467,7 +467,6 @@ contains
   function dydt(t_rkc, y, temper, iz)
    !NPZ from P Franks 1986 recommended by Nikki Lovenduski
    ! Parameters
-    real :: vm = 2.0/24/60/60        ! 1/d
     real :: kn = 1.0        ! umolN/l
     real :: rm = 1.5/24/60/60        ! 1/d
     real :: death_rate_zoo = 0.2/24/60/60    ! 1/d
@@ -476,7 +475,7 @@ contains
     real :: gamma = 0.7
     real :: intensity
     real :: irradiance0 = 1.0
-    real :: k_ext  ! 1/m from P Franks and C Chen 2001
+    real :: k_ext, a_npz, b_npz, c_npz
     real :: function_light
     real, intent(in),  dimension(0:nscl-2) :: y
     real, dimension(0:nscl-2) :: dydt, dy
@@ -550,17 +549,16 @@ contains
     !dy(6) = b2*c(2)-a2*c(1)*c(7)-a4*c(2)*c(7)+b4*c(3)+a5 &
       !   -b5*c(6)*c(7)-a6*c(4)*c(7)+b6*c(5)
 
-    !dy(7) = vm * (c(10) / (kn + c(10))) * function_light * c(8) - &
-     ! intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_phyto * c(8)
+    dy(7) = (a_npz*b**(c*temper)) * (c(10) / (kn + c(10))) * function_light * c(8) - &
+      intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_phyto * c(8)
 
-    !dy(8) = (gamma * intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_zoo * c(9))
+    dy(8) = (gamma * intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_zoo * c(9))
 
-    !dy(9) = (-vm * (c(10) / (kn + c(10))) * function_light * c(8) + (1.0 - gamma) * &
-    !  intensity * (1.0 - exp(-lambda * c(8))) * c(9) + death_rate_phyto * c(8) + death_rate_zoo * c(9))
+    dy(9) = (-(a_npz*b**(c*temper)) * (c(10) / (kn + c(10))) * function_light * c(8) + (1.0 - gamma) * &
+      intensity * (1.0 - exp(-lambda * c(8))) * c(9) + death_rate_phyto * c(8) + death_rate_zoo * c(9))
 
     do i = 0,nscl-2
-       !dydt(i) = dy(i)
-       dydt(i) = 0.0
+       dydt(i) = dy(i)
     enddo
 
   end function dydt
