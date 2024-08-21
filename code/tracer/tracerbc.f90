@@ -1,6 +1,6 @@
 module tracerbc
   use con_data, only: dz,dx,dy
-  use con_stats, only: z, zz
+  use con_stats, only: z, zz, zl
   use pars, only: flg_npz, iys,iye,izs,ize,izi,nnx,nnz,nny,nscl, k_ext
   use fields, only: t
   use inputs
@@ -189,7 +189,7 @@ module tracerbc
          do iz=bnds(1),bnds(2)
             do ix=1,nnx
               if ((iz >= izs) .and. (iz <= ize)) then
-                t(ix,iy,iscl,iz) =vals*exp(-k_ext*(z(iz-1)-z(nnz)))
+                t(ix,iy,iscl,iz) =vals*exp(-k_ext*(z(iz)-zl))
               endif
             end do
          end do
