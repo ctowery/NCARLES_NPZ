@@ -22,7 +22,7 @@ module tracerbc
 !                                2 = vertical band in x, 3 = vertical band in y,
 !                                4 = point source, 5 = vertical gradient,
 !                                6 = horiz. gradient in x, 7 = horiz. gradient in y
-!                                8= exponential decay in z)
+!                                8= exponential decay in -z, 9= exponential decay in +z)
 !             ictype does not work for iscl=1 (temperature), that is set in init/randoc.f
 ! val       : value of initial finite or source band/point
 ! np        : width of initial finite or source band
