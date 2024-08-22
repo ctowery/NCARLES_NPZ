@@ -467,11 +467,12 @@ contains
   function dydt(t_rkc, y, temper, iz)
    !NPZ from P Franks 1986 recommended by Nikki Lovenduski
    ! Parameters
+    real :: vp
     real :: kn = 1.0        ! umolN/l
     real :: rm = 1.5/24/60/60        ! 1/d
-    real :: death_rate_zoo = 0.2/24/60/60    ! 1/d
+    real :: death_rate_zoo = 0.2/24/60/60    ! 1/s
     real :: lambda = 1.0    ! umolN/l
-    real :: death_rate_phyto = 0.1/24/60/60  ! 1/d
+    real :: death_rate_phyto = 0.1/24/60/60  ! 1/s
     real :: gamma = 0.7
     real :: intensity
     real :: irradiance0 = 1.0
@@ -530,9 +531,15 @@ contains
     intensity = rm * c(8) * lambda !Mayzaud-Poulet
    
     function_light=irradiance0*exp(-k_ext*ABS(dz)*(iz-1)) !from P Franks and C Chen 2001
+
+    vp=(a_npz*b_npz**(c_npz*temper))/24/60/60 !from Eppley 1972 (1/s)
     
     !dy(0) = b1*c(2)*c(6)+b2*c(2)-a1*c(1)-a2*c(1)*c(7)
-
+    dy(0)=0
+    dy(1)=0
+    dy(2)=0
+    dy(3)=0
+    dy(4)=0
     !dy(1) = a1*c(1)+a2*c(1)*c(7)-b1*c(2)*c(6)-b2*c(2) &
     !     +a3*c(3)*c(6)-b3*c(2)-a4*c(2)*c(7)+b4*c(3) &
     !     +a7*c(3)*c(4)-b7*c(5)*c(2)
@@ -544,17 +551,18 @@ contains
 
     !dy(4) = a6*c(4)*c(7)- b6*c(5)+a7*c(3)*c(4)-b7*c(5)*c(2)
 
-    !dy(5) = 0
+    dy(5) = 0
 
     !dy(6) = b2*c(2)-a2*c(1)*c(7)-a4*c(2)*c(7)+b4*c(3)+a5 &
       !   -b5*c(6)*c(7)-a6*c(4)*c(7)+b6*c(5)
+    dy(6)=0
 
-    dy(7) = (a_npz*b_npz**(c_npz*temper)) * (c(10) / (kn + c(10))) * function_light * c(8) - &
+    dy(7) = vp * (c(10) / (kn + c(10))) * function_light * c(8) - &
       intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_phyto * c(8)
 
     dy(8) = (gamma * intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_zoo * c(9))
 
-    dy(9) = (-(a_npz*b_npz**(c_npz*temper)) * (c(10) / (kn + c(10))) * function_light * c(8) + (1.0 - gamma) * &
+    dy(9) = (-vp * (c(10) / (kn + c(10))) * function_light * c(8) + (1.0 - gamma) * &
       intensity * (1.0 - exp(-lambda * c(8))) * c(9) + death_rate_phyto * c(8) + death_rate_zoo * c(9))
 
     do i = 0,nscl-2

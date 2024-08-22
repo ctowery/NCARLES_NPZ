@@ -1,7 +1,7 @@
 module tracerbc
-  use con_data, only: dz,dx,dy
-  use con_stats, only: z, zz, zl
-  use pars, only: flg_npz, iys,iye,izs,ize,izi,nnx,nnz,nny,nscl, k_ext
+  use con_data, only: dz,dx,dy, zl
+  use con_stats, only: z, zz
+  use pars, only: flg_npz, iys,iye,izs,ize,izi,nnx,nnz,nny,nscl
   use fields, only: t
   use inputs
 
@@ -14,6 +14,7 @@ module tracerbc
   integer, dimension(3,nscl) :: point
   integer, dimension(3) :: points
   real, dimension(nscl) :: val
+  real, dimension(nscl) :: chng
   contains
 
 ! iscl      : scalar number (temperature is always iscl=1)
@@ -48,57 +49,68 @@ module tracerbc
             ictype(iscl) = 0;   val(iscl) = 273.15 + iTsurf;      tau(iscl)    = 0;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = 0;      zt = 0;  rmodel(iscl) = 0;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0;
 
             !! passive tracers
             iscl = 2;!carbon dioxide (CO2)
             ictype(iscl) = 1;   val(iscl) = c1;     tau(iscl)      = 1;
             asflux(iscl) = 1;   airval(iscl) = 8.56056;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0;
 
             iscl = 3;!bicarbonate (HCO3)
             ictype(iscl) = 1;   val(iscl) = c2;  tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0;
 
             iscl = 4;!carbonate (CO3)
             ictype(iscl) = 1;   val(iscl) = c3;  tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0;
 
             iscl = 5;!Boric acid (B(OH)3)
             ictype(iscl) = 1;   val(iscl) = c4;  tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0;
 
             iscl = 6; !Tetrahydroxyborate (B(OH)4)
             ictype(iscl) = 1;   val(iscl) = c5;  tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0;
 
             iscl = 7; !hydrogen ion (H+)
             ictype(iscl) = 1;   val(iscl) = c6; tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0;
 
             iscl = 8; !Hydroxl ion (OH-)
             ictype(iscl) = 1;   val(iscl) = c7;     tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0;
 
             iscl = 9; !phytoplankton (C106H175O42N16P, organic matter)
             ictype(iscl) = 8;   val(iscl) = c8;  tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0.1;
 
             iscl = 10; !zooplankton
-            ictype(iscl) = 1;   val(iscl) = c9; tau(iscl)      = 1;
+            ictype(iscl) = 8;   val(iscl) = c9; tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0.01;
 
             iscl =11; !nitrate (NO3)
-            ictype(iscl) = 1;   val(iscl) = c10;     tau(iscl)      = 1;
+            ictype(iscl) = 9;   val(iscl) = c10;     tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0.01;
 
         do iscl = 2,nscl
           bnds=bnd(:,iscl); vals=val(iscl); points=point(:,iscl);
@@ -106,8 +118,8 @@ module tracerbc
               if (ictype(iscl).eq.1) call hbndsource(iscl,bnds,vals);
               if (ictype(iscl).eq.4) call pointsource(iscl, bnds, vals);
               if (ictype(iscl).eq.5) call vgradsource(iscl,bnds,vals);
-              if (ictype(iscl).eq.8) call zdecay(iscl, k_ext, bnds, vals);
-              if (ictype(iscl).eq.9) call nutrients(iscl, k_ext, bnds, vals);
+              if (ictype(iscl).eq.8) call zdecay(iscl, chng(iscl), bnds, vals);
+              if (ictype(iscl).eq.9) call nutrients(iscl, chng(iscl), bnds, vals);
           endif
           bnds = 0; vals = 0; points = 0;
         enddo
@@ -160,9 +172,9 @@ module tracerbc
 
     end subroutine
 
-    subroutine zdecay(iscl, k_ext, bnds, vals)
+    subroutine zdecay(iscl, chng, bnds, vals)
       integer, intent(in) :: iscl
-      real, intent(in) :: k_ext
+      real, intent(in) :: chng
       real, intent(in) :: vals
       integer, intent(in), dimension(2) :: bnds
       integer :: ix,iy,iz
@@ -171,16 +183,16 @@ module tracerbc
          do iz=bnds(1),bnds(2)
             do ix=1,nnx
               if ((iz >= izs) .and. (iz <= ize)) then
-                t(ix,iy,iscl,iz) =vals*exp(k_ext*z(iz-1))
+                t(ix,iy,iscl,iz) =vals*exp(chng*z(iz-1))
               endif
             end do
          end do
       end do
     end subroutine
 
-    subroutine nutrients(iscl, k_ext, bnds, vals)
+    subroutine nutrients(iscl, chng, bnds, vals)
       integer, intent(in) :: iscl
-      real, intent(in) :: k_ext
+      real, intent(in) :: chng
       real, intent(in) :: vals
       integer, intent(in), dimension(2) :: bnds
       integer :: ix,iy,iz, nnz
@@ -189,7 +201,7 @@ module tracerbc
          do iz=bnds(1),bnds(2)
             do ix=1,nnx
               if ((iz >= izs) .and. (iz <= ize)) then
-                t(ix,iy,iscl,iz) =vals*exp(-k_ext*(z(iz)-zl))
+                t(ix,iy,iscl,iz) =vals*exp(-chng*(z(iz)-zl))
               endif
             end do
          end do
@@ -200,6 +212,7 @@ module tracerbc
       integer, intent(in) :: iscl
       integer, intent(in), dimension(2) :: bnds
       real, intent(in) :: vals
+      real :: spread=1
       integer :: ix,iy,iz,zi
       
       !point source at the surface in the middle
@@ -207,11 +220,7 @@ module tracerbc
         do iz=bnds(1),bnds(2)
             do ix=1,nnx
               if ((iz >= izs) .and. (iz <= ize)) then
-                if (iy == nny/2 .and. ix == nnx/2) then
-                    t(ix,iy,iscl,iz) = vals
-                else
-                    t(ix,iy,iscl,iz) = 0
-                endif
+                t(ix, iy, iscl,iz)=vals/(2*4.0*ATAN(1.0)*spread**2)*exp(-((ix-nnx/2)**2+(iy-nny/2)**2)/(2*spread**2))
               endif
             end do
         end do
