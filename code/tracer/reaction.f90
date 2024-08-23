@@ -532,7 +532,7 @@ contains
    
     function_light=irradiance0*exp(-k_ext*ABS(dz)*(iz-1)) !from P Franks and C Chen 2001
 
-    vp=(a_npz*b_npz**(c_npz*temper))/24/60/60 !from Eppley 1972 (1/s)
+    vp=(a_npz*b_npz**(c_npz*temper-273.15))/24/60/60 !from Eppley 1972 (1/s)
     
     !dy(0) = b1*c(2)*c(6)+b2*c(2)-a1*c(1)-a2*c(1)*c(7)
     dy(0)=0
