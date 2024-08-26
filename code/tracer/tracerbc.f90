@@ -1,7 +1,7 @@
 module tracerbc
   use con_data, only: dz,dx,dy, zl
   use con_stats, only: z, zz
-  use pars, only: flg_npz, iys,iye,izs,ize,izi,nnx,nnz,nny,nscl
+  use pars, only: flg_alk, flg_npz, iys,iye,izs,ize,izi,nnx,nnz,nny,nscl
   use fields, only: t
   use inputs
 
@@ -108,6 +108,12 @@ module tracerbc
 
             iscl =11; !nitrate (NO3)
             ictype(iscl) = 9;   val(iscl) = c10;     tau(iscl)      = 1;
+            asflux(iscl) = 0;   airval(iscl) = 0;
+            np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
+            chng(iscl)=0.01;
+
+            iscl =12; !detritus
+            ictype(iscl) = 1;   val(iscl) = c11;     tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
             chng(iscl)=0.01;

@@ -10,13 +10,13 @@ MODULE pars
   INTEGER, PARAMETER :: flg_lat = 0       ! solve using lat or utau
   INTEGER, PARAMETER :: flg_reaction = 1  ! 3.1536e8 reaction model on or off
   INTEGER, PARAMETER :: chem0d = 0
-  INTEGER, PARAMETER :: flg_npz=0         ! 1 => debugging NPZ model
   INTEGER, PARAMETER :: co2_asflux = 0    ! 2 => WB_param
   INTEGER, PARAMETER :: flg_alk = 0       ! changing alkalinity
+  INTEGER, PARAMETER :: flg_npz = 0       ! changing NPZ model, mayzaud-poulet= 0 or ivlev=1
   INTEGER, PARAMETER :: iti=0, itmax=10, imean=1, ihst=01, itape=1,        &
   itstr=1, it_his=120000, i_viz=120000
 
-  INTEGER, PARAMETER :: nscl = 11, nvar = (4+nscl) !number of scalars and vars
+  INTEGER, PARAMETER :: nscl = 12, nvar = (4+nscl) !number of scalars and vars
   INTEGER, PARAMETER :: nxg1  = 32, nyg1  = 32, nzg1  = 32 !size of problem
   INTEGER, PARAMETER :: maxnx = 256, maxny = 256, maxnz = 256 !max size
   INTEGER, PARAMETER :: maxnz1 = maxnz + 1, maxnz2 = maxnz + 2,             &

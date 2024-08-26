@@ -469,11 +469,14 @@ contains
    ! Parameters
     real :: vp
     real :: kn = 1.0        ! umolN/l
-    real :: rm = 1.5/24/60/60        ! 1/d
+    real :: rm = 1.5/24/60/60        ! 1/s
     real :: death_rate_zoo = 0.2/24/60/60    ! 1/s
     real :: lambda = 1.0    ! umolN/l
     real :: death_rate_phyto = 0.1/24/60/60  ! 1/s
-    real :: gamma = 0.7
+    real :: alpha = 0.3
+    real :: beta = 0.6
+    real :: phi = 0.4/24/60/60 ! 1/s
+    real :: r_npzd = 0.15 
     real :: intensity
     real :: irradiance0 = 1.0
     real :: k_ext, a_npz, b_npz, c_npz
@@ -527,8 +530,11 @@ contains
     b6 = (a6*Kw/Kb)*(1.0e6)
     b7 = a7*K2s/Kb
 
-
-    intensity = rm * c(8) * lambda !Mayzaud-Poulet
+    if(flg_npz==0)then !Mayzaud-Poulet
+      intensity = rm * c(8) * lambda !Mayzaud-Poulet
+    else !Ivlev
+      intensity = rm
+    endif
    
     function_light=irradiance0*exp(-k_ext*ABS(dz)*(iz-1)) !from P Franks and C Chen 2001
 
@@ -558,12 +564,17 @@ contains
     dy(6)=0
 
     dy(7) = vp * (c(10) / (kn + c(10))) * function_light * c(8) - &
-      intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_phyto * c(8)
+      intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_phyto &
+      * c(8)- r_npzd * c(8)
 
-    dy(8) = (gamma * intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_zoo * c(9))
+    dy(8) = beta * intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_zoo * c(9)
 
-    dy(9) = (-vp * (c(10) / (kn + c(10))) * function_light * c(8) + (1.0 - gamma) * &
-      intensity * (1.0 - exp(-lambda * c(8))) * c(9) + death_rate_phyto * c(8) + death_rate_zoo * c(9))
+    dy(9) = -vp * (c(10) / (kn + c(10))) * function_light * c(8) + alpha * &
+      intensity * (1.0 - exp(-lambda * c(8))) * c(9) + death_rate_phyto * c(8) + &
+      death_rate_zoo * c(9)+ phi*c(11)
+
+    dy(10)=r_npzd*c(8) + (1 - alpha - beta)*intensity * (1.0 - exp(-lambda * c(8))) * c(9) &
+      - phi * c(11)
 
     do i = 0,nscl-2
        dydt(i) = dy(i)

@@ -18,6 +18,7 @@ MODULE inputs
                       c8  =  0.3,             &
                       c9  =  0.2,           &
                       c10  =  1.6,             &
+                      c11=  0.0,             &
                       ustokes = 6.0,                       &
                       Rgas = 0.0083143
 

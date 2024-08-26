@@ -55,7 +55,7 @@ SUBROUTINE strang1(it)
         
       ENDDO
     ENDDO
-    CALL NPZdebug(Phyto, Zoo, Nutrients, iz, 'end of strang1')
+    !CALL NPZdebug(Phyto, Zoo, Nutrients, iz, 'end of strang1')
     Pavg=0.0
     Zavg=0.0
     Navg=0.0
