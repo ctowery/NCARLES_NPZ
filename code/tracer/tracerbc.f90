@@ -98,19 +98,19 @@ module tracerbc
             ictype(iscl) = 8;   val(iscl) = c8;  tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
-            chng(iscl)=0.1;
+            chng(iscl)=0.02;
 
             iscl = 10; !zooplankton
             ictype(iscl) = 8;   val(iscl) = c9; tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
-            chng(iscl)=0.01;
+            chng(iscl)=0.02;
 
             iscl =11; !nitrate (NO3)
             ictype(iscl) = 9;   val(iscl) = c10;     tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
-            chng(iscl)=0.01;
+            chng(iscl)=0.02;
 
             iscl =12; !detritus
             ictype(iscl) = 1;   val(iscl) = c11;     tau(iscl)      = 1;

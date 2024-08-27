@@ -13,7 +13,7 @@ MODULE pars
   INTEGER, PARAMETER :: co2_asflux = 0    ! 2 => WB_param
   INTEGER, PARAMETER :: flg_alk = 0       ! changing alkalinity
   INTEGER, PARAMETER :: flg_npz = 0       ! changing NPZ model, mayzaud-poulet= 0 or ivlev=1
-  INTEGER, PARAMETER :: iti=0, itmax=10, imean=1, ihst=01, itape=1,        &
+  INTEGER, PARAMETER :: iti=0, itmax=80000, imean=1, ihst=01, itape=500,        &
   itstr=1, it_his=120000, i_viz=120000
 
   INTEGER, PARAMETER :: nscl = 12, nvar = (4+nscl) !number of scalars and vars
