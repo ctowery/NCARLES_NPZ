@@ -49,13 +49,13 @@ SUBROUTINE strang1(it)
   DO iz=izs,ize
     DO ix=1,nnx
       DO iy=iys,iye
-        Pavg= Pavg+ t(ix,iy,6,iz)
-        Zavg= Zavg+ t(ix,iy,7,iz)
-        Navg= Navg+ t(ix,iy,8,iz)
+        Pavg= Pavg+ t(ix,iy,6,iz)/(nnx**2)
+        Zavg= Zavg+ t(ix,iy,7,iz)/(nnx**2)
+        Navg= Navg+ t(ix,iy,8,iz)/(nnx**2)
         
       ENDDO
     ENDDO
-    !CALL NPZdebug(Phyto, Zoo, Nutrients, iz, 'end of strang1')
+    CALL NPZdebug(Pavg, Zavg, Navg, iz, 'end of strang1')
     Pavg=0.0
     Zavg=0.0
     Navg=0.0

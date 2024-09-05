@@ -469,16 +469,16 @@ contains
    ! Parameters
     real :: vp
     real :: kn = 1.0        ! umolN/l
-    real :: rm = 1.5/24/60/60        ! 1/s
-    real :: death_rate_zoo = 0.2/24/60/60    ! 1/s
+    real :: rm = 1.5/24.0/60.0/60.0        ! 1/s
+    real :: death_rate_zoo = 0.2/24.0/60.0/60.0    ! 1/s
     real :: lambda = 1.0    ! umolN/l
-    real :: death_rate_phyto = 0.1/24/60/60  ! 1/s
+    real :: death_rate_phyto = 0.1/24.0/60.0/60.0  ! 1/s
     real :: alpha = 0.3
     real :: beta = 0.6
-    real :: phi = 0.4/24/60/60 ! 1/s
+    real :: phi = 0.4/24.0/60.0/60.0 ! 1/s
     real :: r_npzd = 0.15 
     real :: intensity
-    real :: irradiance0 = 1.0
+    real :: irradiance0 
     real :: k_ext, a_npz, b_npz, c_npz
     real :: function_light
     real, intent(in),  dimension(0:nscl-2) :: y
@@ -535,10 +535,10 @@ contains
     else !Ivlev
       intensity = rm
     endif
-   
+    irradiance0=0.5*COS(2*4.0*ATAN(1.0)*(time/24.0/60.0/60.0)) + 0.5 + 0.5*10**(-6)
     function_light=irradiance0*exp(-k_ext*ABS(dz)*(iz-1)) !from P Franks and C Chen 2001
 
-    vp=(a_npz*b_npz**(c_npz*temper-273.15))/24/60/60 !from Eppley 1972 (1/s)
+    vp=(a_npz*b_npz**(c_npz*temper-273.15))/24.0/60.0/60.0 !from Eppley 1972 (1/s)
     
     !dy(0) = b1*c(2)*c(6)+b2*c(2)-a1*c(1)-a2*c(1)*c(7)
     dy(0)=0

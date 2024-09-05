@@ -226,7 +226,7 @@ module tracerbc
         do iz=bnds(1),bnds(2)
             do ix=1,nnx
               if ((iz >= izs) .and. (iz <= ize)) then
-                t(ix, iy, iscl,iz)=vals/(2*4.0*ATAN(1.0)*spread**2)*exp(-((ix-nnx/2)**2+(iy-nny/2)**2)/(2*spread**2))
+                t(ix, iy, iscl,iz)=2*vals/((2*4.0*ATAN(1.0))**(3/2)*spread**3)*exp(-((ix-nnx/2)**2+(iy-nny/2)**2+(iz)**2)/(2*spread**2))
               endif
             end do
         end do
