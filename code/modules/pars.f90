@@ -12,7 +12,7 @@ MODULE pars
   INTEGER, PARAMETER :: chem0d = 0
   INTEGER, PARAMETER :: co2_asflux = 0    ! 2 => WB_param
   INTEGER, PARAMETER :: flg_alk = 0       ! changing alkalinity
-  INTEGER, PARAMETER :: flg_npz = 0       ! changing NPZ model, mayzaud-poulet= 0 or ivlev=1
+  INTEGER, PARAMETER :: flg_npz = 1       ! changing NPZ model, mayzaud-poulet= 0 or ivlev=1
   INTEGER, PARAMETER :: iti=0, itmax=80000, imean=1, ihst=01, itape=500,        &
   itstr=1, it_his=120000, i_viz=120000
 
@@ -139,5 +139,5 @@ MODULE pars
           fug, khen, bet_ost, kbub, u_tau, wa, wh
 !----------------------NPZ parameters that are called in the code----------------
   REAL ::                                                                &
-          k_ext=0.1, a_npz=0.6, b_npz=1.066, c_npz=1 
+          k_ext=0.1, a_npz=0.6/24.0/60.0/60.0, b_npz=1.066, c_npz=1.0 
 END MODULE

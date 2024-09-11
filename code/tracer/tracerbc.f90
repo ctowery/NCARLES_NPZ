@@ -23,7 +23,8 @@ module tracerbc
 !                                2 = vertical band in x, 3 = vertical band in y,
 !                                4 = point source, 5 = vertical gradient,
 !                                6 = horiz. gradient in x, 7 = horiz. gradient in y
-!                                8= exponential decay in -z, 9= exponential decay in +z)
+!                                8= exponential decay in -z, 9= exponential decay in +z
+!                                10= exponential decay in -z with a constant layer)
 !             ictype does not work for iscl=1 (temperature), that is set in init/randoc.f
 ! val       : value of initial finite or source band/point
 ! np        : width of initial finite or source band
@@ -95,19 +96,19 @@ module tracerbc
             chng(iscl)=0;
 
             iscl = 9; !phytoplankton (C106H175O42N16P, organic matter)
-            ictype(iscl) = 8;   val(iscl) = c8;  tau(iscl)      = 1;
+            ictype(iscl) = 1;   val(iscl) = c8;  tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
             chng(iscl)=0.02;
 
             iscl = 10; !zooplankton
-            ictype(iscl) = 8;   val(iscl) = c9; tau(iscl)      = 1;
+            ictype(iscl) = 1;   val(iscl) = c9; tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
             chng(iscl)=0.02;
 
             iscl =11; !nitrate (NO3)
-            ictype(iscl) = 9;   val(iscl) = c10;     tau(iscl)      = 1;
+            ictype(iscl) = 1;   val(iscl) = c10;     tau(iscl)      = 1;
             asflux(iscl) = 0;   airval(iscl) = 0;
             np = nnz+2;  zt = 0;  rmodel(iscl) = 3;  bnd(:,iscl) = znptobnd(zt,np);
             chng(iscl)=0.02;
@@ -126,6 +127,7 @@ module tracerbc
               if (ictype(iscl).eq.5) call vgradsource(iscl,bnds,vals);
               if (ictype(iscl).eq.8) call zdecay(iscl, chng(iscl), bnds, vals);
               if (ictype(iscl).eq.9) call nutrients(iscl, chng(iscl), bnds, vals);
+              if (ictype(iscl).eq.10) call nutrients1(iscl, chng(iscl), bnds, vals);
           endif
           bnds = 0; vals = 0; points = 0;
         enddo
@@ -213,6 +215,25 @@ module tracerbc
          end do
       end do
     end subroutine
+
+    subroutine nutrients1(iscl, chng, bnds, vals)
+      integer, intent(in) :: iscl
+      real, intent(in) :: chng
+      real, intent(in) :: vals
+      integer, intent(in), dimension(2) :: bnds
+      integer :: ix,iy,iz, nnz
+
+      do iy=iys,iye
+         do iz=bnds(1),bnds(2)
+            do ix=1,nnx
+              if ((iz >= izs) .and. (iz <= ize)) then
+                t(ix,iy,iscl,iz) =vals*exp(-chng*(z(iz+1)-zl))
+              endif
+            end do
+         end do
+      end do
+    end subroutine
+
 
     subroutine pointsource(iscl, bnds, vals)
       integer, intent(in) :: iscl
