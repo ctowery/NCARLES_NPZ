@@ -476,7 +476,7 @@ contains
     real :: alpha = 0.3
     real :: beta = 0.6
     real :: phi = 0.4/24.0/60.0/60.0 ! 1/s
-    real :: r_npzd = 0.15/24.0/60.0/60.0  ! 1/s
+    real :: r_npzd = 0.15/24.0/60.0/60.0  ! 1/s 
     real :: intensity
     real :: irradiance0 =1.0
     real :: k_ext, a_npz, b_npz, c_npz
@@ -573,7 +573,7 @@ contains
       intensity * (1.0 - exp(-lambda * c(8))) * c(9) + death_rate_phyto * c(8) + &
       death_rate_zoo * c(9)+ phi*c(11)
 
-    dy(10)=r_npzd*c(8) + (1 - alpha - beta)*intensity * (1.0 - exp(-lambda * c(8))) * c(9) &
+    dy(10) = r_npzd * c(8) + (1 - alpha - beta) * intensity * (1.0 - exp(-lambda * c(8))) * c(9) &
       - phi * c(11)
 
     do i = 0,nscl-2
