@@ -44,24 +44,16 @@ contains
     t_end  = time + dt*0.5
     task   = 1
 
-    ! C(1) = Carbon Dioxide, [CO2], t(ix,iy,2,iz)
-    ! C(2) = Bicarbonate, [HCO3-], t(ix,iy,3,iz)
-    ! C(3) = Carbonate, [CO32-], t(ix,iy,4,iz)
-    ! C(4) = Boric Acid, [B(OH)3], t(ix,iy,5,iz)
-    ! C(5) = Tetrahydroxyborate, [B(OH)4-], t(ix,iy,6,iz)
-    ! C(6) = Hydrogen Ion, [H+], t(ix,iy,7,iz)
-    ! C(7) = Hydroxide, [OH-], t(ix,iy,8,iz)
-
-    co2(0) = t(ix,iy,2,iz)
-    co2(1) = t(ix,iy,3,iz)
-    co2(2) = t(ix,iy,4,iz)
-    co2(3) = t(ix,iy,5,iz)
-    co2(4) = t(ix,iy,6,iz)
-    co2(5) = t(ix,iy,7,iz)
-    co2(6) = t(ix,iy,8,iz)
-    co2(7) = t(ix,iy,9,iz)
-    co2(8) = t(ix,iy,10,iz)
-    co2(9) = t(ix,iy,11,iz)
+    ! c(0) = Carbon Dioxide, [CO2], t(ix,iy,2,iz)
+    ! c(1) = Bicarbonate, [HCO3-], t(ix,iy,3,iz)
+    ! c(2) = Carbonate, [CO32-], t(ix,iy,4,iz)
+    ! c(3) = Boric Acid, [B(OH)3], t(ix,iy,5,iz)
+    ! c(4) = Tetrahydroxyborate, [B(OH)4-], t(ix,iy,6,iz)
+    ! c(5) = Hydrogen Ion, [H+], t(ix,iy,7,iz)
+    ! c(6) = Hydroxide, [OH-], t(ix,iy,8,iz)
+    
+    co2=t(ix, iy, 2:nscl, iz)
+    
 
     if(chem0d == 1) then
       temper = iTsurf
@@ -71,10 +63,7 @@ contains
 
     co2tmp = intDriver(t_rkc, t_end, co2, temper, iz)
    
-    do i = 0,nscl-2
-       co2(i) = co2tmp(i)
-    enddo
-
+    co2=co2tmp
 
     do i = 0,nscl-2
        react_src(i+1) = co2(i)
@@ -465,7 +454,7 @@ contains
   end function rkc_step
 
   function dydt(t_rkc, y, temper, iz)
-   !NPZ from P Franks 1986 recommended by Nikki Lovenduski
+   ! NPZ from P Franks 1986 recommended by Nikki Lovenduski
    ! Parameters
     real :: vp
     real :: kn = 1.0        ! umolN/l
@@ -483,7 +472,7 @@ contains
     real :: function_light
     real, intent(in),  dimension(0:nscl-2) :: y
     real, dimension(0:nscl-2) :: dydt, dy
-    real, dimension(nscl-1) :: c
+    real, dimension(0:nscl-2) :: c
     real, intent(in) :: t_rkc, temper
     real K1s, K2s, Kw, Kb, Rgas, salt
     integer i
@@ -496,7 +485,7 @@ contains
     reduced = .true.
     salt   = 35.0
     do i = 0,nscl-2
-       c(i+1) = y(i)
+       c(i) = y(i)
     enddo
 
     K1s = exp(-2307.1266/temper + 2.83655 - 1.5529413*log(temper) + &
@@ -531,7 +520,7 @@ contains
     b7 = a7*K2s/Kb
 
     if(flg_npz==0)then !Mayzaud-Poulet
-      intensity = rm * c(8) * lambda !Mayzaud-Poulet
+      intensity = rm * c(7) * lambda !Mayzaud-Poulet
     else !Ivlev
       intensity = rm
     endif
@@ -540,41 +529,41 @@ contains
     function_light=irradiance0
     vp=(a_npz*b_npz**(c_npz*15.0))/24.0/60.0/60.0 !from Eppley 1972 (1/s)
     
-    !dy(0) = b1*c(2)*c(6)+b2*c(2)-a1*c(1)-a2*c(1)*c(7)
+    !dy(0) = b1*c(1)*c(5)+b2*c(1)-a1*c(0)-a2*c(0)*c(6)
     dy(0)=0
     dy(1)=0
     dy(2)=0
     dy(3)=0
     dy(4)=0
-    !dy(1) = a1*c(1)+a2*c(1)*c(7)-b1*c(2)*c(6)-b2*c(2) &
-    !     +a3*c(3)*c(6)-b3*c(2)-a4*c(2)*c(7)+b4*c(3) &
-    !     +a7*c(3)*c(4)-b7*c(5)*c(2)
+    !dy(1) = a1*c(0)+a2*c(0)*c(6)-b1*c(1)*c(5)-b2*c(1) &
+    !     +a3*c(2)*c(5)-b3*c(1)-a4*c(1)*c(6)+b4*c(2) &
+    !     +a7*c(2)*c(3)-b7*c(4)*c(1)
 
-    !dy(2) = -a3*c(3)*c(6)+ b3*c(2)+a4*c(2)*c(7)-b4*c(3) &
-    !     -a7*c(3)*c(4)+b7*c(5)*c(2)
+    !dy(2) = -a3*c(2)*c(5)+ b3*c(1)+a4*c(1)*c(6)-b4*c(2) &
+    !     -a7*c(2)*c(3)+b7*c(4)*c(1)
 
-    !dy(3) = -a6*c(4)*c(7)+ b6*c(5)-a7*c(3)*c(4)+b7*c(5)*c(2)
+    !dy(3) = -a6*c(3)*c(6)+ b6*c(4)-a7*c(2)*c(3)+b7*c(4)*c(1)
 
-    !dy(4) = a6*c(4)*c(7)- b6*c(5)+a7*c(3)*c(4)-b7*c(5)*c(2)
+    !dy(4) = a6*c(3)*c(6)- b6*c(4)+a7*c(2)*c(3)-b7*c(4)*c(1)
 
     dy(5) = 0
 
-    !dy(6) = b2*c(2)-a2*c(1)*c(7)-a4*c(2)*c(7)+b4*c(3)+a5 &
-      !   -b5*c(6)*c(7)-a6*c(4)*c(7)+b6*c(5)
+    !dy(6) = b2*c(1)-a2*c(0)*c(6)-a4*c(1)*c(6)+b4*c(2)+a5 &
+      !   -b5*c(5)*c(6)-a6*c(3)*c(6)+b6*c(4)
     dy(6)=0
 
-    dy(7) = vp * (c(10) / (kn + c(10))) * function_light * c(8) - &
-      intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_phyto &
-      * c(8)- r_npzd * c(8)
+    dy(7) = vp * (c(9) / (kn + c(9))) * function_light * c(7) - &
+      intensity * (1.0 - exp(-lambda * c(7))) * c(8) - death_rate_phyto &
+      * c(7)- r_npzd * c(7)
 
-    dy(8) = beta * intensity * (1.0 - exp(-lambda * c(8))) * c(9) - death_rate_zoo * c(9)
+    dy(8) = beta * intensity * (1.0 - exp(-lambda * c(7))) * c(8) - death_rate_zoo * c(8)
 
-    dy(9) = -vp * (c(10) / (kn + c(10))) * function_light * c(8) + alpha * &
-      intensity * (1.0 - exp(-lambda * c(8))) * c(9) + death_rate_phyto * c(8) + &
-      death_rate_zoo * c(9)+ phi*c(11)
+    dy(9) = -vp * (c(9) / (kn + c(9))) * function_light * c(7) + alpha * &
+      intensity * (1.0 - exp(-lambda * c(7))) * c(8) + death_rate_phyto * c(7) + &
+      death_rate_zoo * c(8)+ phi*c(10)
 
-    dy(10) = r_npzd * c(8) + (1 - alpha - beta) * intensity * (1.0 - exp(-lambda * c(8))) * c(9) &
-      - phi * c(11)
+    dy(10) = r_npzd * c(7) + (1 - alpha - beta) * intensity * (1.0 - exp(-lambda * c(7))) * c(8) &
+      - phi * c(10)
 
     do i = 0,nscl-2
        dydt(i) = dy(i)
