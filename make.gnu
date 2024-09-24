@@ -1,4 +1,3 @@
-
 # MODIFY THESE AS YOU NEED/LIKE ----------------------------------------------------------
 SRC_DIR := ../code
 MPI := mpif90
