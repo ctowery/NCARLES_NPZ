@@ -46,8 +46,3 @@ realclean:
 
 clean: 
 	rm -rf *.dSYM lesmpi
-
-# SRCS := $(notdir $(SRCS))
-# OBJS := $(SRCS:%=%.o)
-# F90_SRCS := $(shell find $(SRC_DIR) -name '*.f90')
-# F90_OBJS := $(F90_SRCS:.f90=.o)
