@@ -1,0 +1,7 @@
+build/
+build/modules/
+*.mod
+*.o
+*.so
+lesmpi
+Makefile
