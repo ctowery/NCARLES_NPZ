@@ -1,7 +1,8 @@
-build/
-build/modules/
-*.mod
-*.o
-*.so
-lesmpi
-Makefile
+**/build/
+**/modules/
+**/*.mod
+**/*.o
+**/*.so
+**/*.dSYM
+**/lesmpi
+**/Makefile
