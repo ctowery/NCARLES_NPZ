@@ -2,7 +2,7 @@
 SRC_DIR := ../code
 MPI := mpif90
 # note the use of = and not := here, allows deferring definitions of COMMON etc. to later
-FFLAGS = $(COMMON) $(OPT1) # choose DBG1/DBG2/DBG3 or OPT2/OPT3.
+FFLAGS = $(COMMON) $(OPT1) # from most hardcore debugging to hardcore optimization, choose DBG3,2,1 or OPT1,2,3,4
 
 # These flags are specific to Intel fortran ----------------------------------------------------
 # I like verbose flags in a makefile, because why not when you aren't typing them out yourself?
@@ -31,8 +31,6 @@ vpath %.f90 $(INC_DIRS)  # necessary to compile the modules without explicitly s
 MOD_SRCS := inputs.f90 pars.f90 con_data.f90 con_stats.f90 fftwk.f90 fields.f90 tracerbc.f90 reaction.f90
 MODS := $(MOD_SRCS:.f90=.mod)
 
-.PHONY : clean realclean modules
-
 # The final make step. Call with just `make` or explicitly as `make lespmi`.
 lesmpi : $(MODS) 
 	$(MPI) $(FFLAGS) $(SRCS) -o $@ $(LDFLAGS)
@@ -41,8 +39,19 @@ lesmpi : $(MODS)
 %.mod : %.f90
 	$(MPI) $(FFLAGS) -c $<
 
-realclean:
-	rm -rf *.o *.mod lesmpi
 
+.PHONY : clean realclean cleansrc
+
+# this just removes things made by the `make lesmpi` command in your current directory
 clean: 
-	rm -rf lesmpi
+	rm -f lesmpi
+
+# this should remove everything in your current directory
+realclean:
+	rm -f *.o *.mod lesmpi
+
+# this removes things in the source directory. If compiling correctly these shouldn't exist,
+# but if messing around with the makefile, you might accidentally compile something "in-place"
+# within the source directory
+cleansrc:
+	rm -f $(shell find $(SRC_DIR) -name '*.o' -or -name '*.mod')
