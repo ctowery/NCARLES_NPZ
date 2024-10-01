@@ -6,3 +6,4 @@
 **/*.dSYM
 **/lesmpi
 **/Makefile
+NPZD_OD.f90
