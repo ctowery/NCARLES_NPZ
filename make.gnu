@@ -39,18 +39,18 @@ lesmpi : $(MODS)
 	$(MPI) $(FFLAGS) -c $<
 
 
-.PHONY : clean realclean modules
+.PHONY : clean realclean cleansrc
 
 # this just removes things made by the `make lesmpi` command in your current directory
 clean: 
-	rm -f *.dSYM lesmpi
+	rm -rf *.dSYM lesmpi
 
 # this should remove everything in your current directory
 realclean:
-	rm -f *.o *.mod *.dSYM lesmpi
+	rm -rf *.o *.mod *.dSYM lesmpi
 
 # this removes things in the source directory. If compiling correctly these shouldn't exist,
 # but if messing around with the makefile, you might accidentally compile something "in-place"
 # within the source directory
 cleansrc:
-	rm -f $(shell find $(SRC_DIR) -name '*.o' -or -name '*.mod' -or -name '*.dSYM')
+	rm -rf $(shell find $(SRC_DIR) -name '*.o' -or -name '*.mod' -or -name '*.dSYM')
